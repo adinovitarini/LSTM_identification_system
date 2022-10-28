@@ -1,0 +1,20 @@
+function [Train,Test] = preprocess(data)
+% data = cartpole1;
+numTimeStepsTrain = floor(0.9*numel(data(:,1)));
+dataTrain = data(1:numTimeStepsTrain+1,:);
+dataTest = data(numTimeStepsTrain+1:end,:);
+mu = mean(dataTrain);
+sig = std(dataTrain);
+dataTrainStandardized = (dataTrain - mu) / sig;
+dataTestStandardized = (dataTest - mean(dataTest)) / std(dataTest);
+XTrain = dataTrainStandardized(1:end-1);
+YTrain = dataTrainStandardized(2:end);
+XTest = dataTestStandardized(1:end-1);
+YTest = dataTestStandardized(2:end);
+adsXTrain = arrayDatastore(XTrain);
+adsYTrain = arrayDatastore(YTrain);
+adsXTest = arrayDatastore(XTest);
+adsYTest = arrayDatastore(YTest);
+Train = combine(adsXTrain,adsYTrain);
+Test = combine(adsXTrain,adsYTest);
+end
